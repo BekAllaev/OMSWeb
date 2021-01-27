@@ -7,9 +7,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2BD3EEDD-12D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CBC836DD-68AB-4B5B-9E59-A1AE1892900F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OMSWeb.Data.Model", "OMSWeb.Data.Model\OMSWeb.Data.Model.csproj", "{02AC08BB-0E7A-4FE7-85C9-146B06223876}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{02AC08BB-0E7A-4FE7-85C9-146B06223876}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02AC08BB-0E7A-4FE7-85C9-146B06223876}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02AC08BB-0E7A-4FE7-85C9-146B06223876}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02AC08BB-0E7A-4FE7-85C9-146B06223876}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{02AC08BB-0E7A-4FE7-85C9-146B06223876} = {2BD3EEDD-12D4-4DCF-80FE-FF85E7CBB53B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9E92BEE5-3D1F-4434-BC47-5D524713F6A2}
