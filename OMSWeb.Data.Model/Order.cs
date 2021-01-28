@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace OMSWeb.Data.Model.Models
+namespace OMSWeb.Data.Model
 {
     public partial class Order
     {

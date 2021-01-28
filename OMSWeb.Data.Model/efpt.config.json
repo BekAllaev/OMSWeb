@@ -6,7 +6,7 @@
    "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": null,
-   "OutputPath": "Models",
+   "OutputPath": "",
    "ProjectRootNamespace": "OMSWeb.Data.Model",
    "Schemas": null,
    "SelectedHandlebarsLanguage": 0,
