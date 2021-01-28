@@ -1,6 +1,8 @@
-﻿namespace OMSWeb.Data.Access.DAL
+﻿using System;
+
+namespace OMSWeb.Data.Access.DAL
 {
-    public interface ITransaction
+    public interface ITransaction : IDisposable
     {
     }
 }
