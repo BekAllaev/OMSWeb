@@ -2,13 +2,34 @@
 
 namespace OMSWeb.Data.Access.DAL
 {
-    internal class DbTransaction : ITransaction
+    public class DbTransaction : ITransaction
     {
-        private IDbContextTransaction dbContextTransaction;
+        #region Declarations
+        private IDbContextTransaction _efContextTransaction;
+        #endregion
 
+        #region Constructor
         public DbTransaction(IDbContextTransaction dbContextTransaction)
         {
-            this.dbContextTransaction = dbContextTransaction;
+            _efContextTransaction = dbContextTransaction;
         }
+        #endregion
+
+        #region ITransaction implementation
+        public void Commit()
+        {
+            _efContextTransaction.Commit();
+        }
+
+        public void Dispose()
+        {
+            _efContextTransaction.Dispose();
+        }
+
+        public void RollBack()
+        {
+            _efContextTransaction.Rollback();
+        }
+        #endregion
     }
 }

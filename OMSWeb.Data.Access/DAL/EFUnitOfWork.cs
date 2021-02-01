@@ -45,32 +45,34 @@ namespace OMSWeb.Data.Access.DAL
 
         public void Commit()
         {
-            throw new NotImplementedException();
+            _context.SaveChanges();
         }
 
-        public Task CommitAsync()
+        public async Task CommitAsync()
         {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
         }
 
         public void Delete<T>(T obj) where T : class
         {
-            throw new NotImplementedException();
+            var set = _context.Set<T>();
+            set.Remove(obj);
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _context = null;
         }
 
         public IQueryable<T> Query<T>() where T : class
         {
-            throw new NotImplementedException();
+            return _context.Set<T>();
         }
 
         public void Update<T>(T obj) where T : class
         {
-            throw new NotImplementedException();
+            var set = _context.Set<T>();
+            set.Update(obj);
         }
         #endregion
     }
