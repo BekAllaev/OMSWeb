@@ -30,7 +30,7 @@ namespace OMSWeb.Queries.Queries
             throw new NotImplementedException();
         }
 
-        public Task<Order> Update(int id, UpdateOrderModel model)
+        public Task<Order> Update(int id, UpdateOrderDTO model)
         {
             throw new NotImplementedException();
         }
