@@ -14,7 +14,7 @@ namespace OMSWeb.Queries.Queries
 
         Order Get(int id);
 
-        Task<Order> Create(CreateOrderModel model);
+        Task<Order> Create(CreateOrderDTO model);
 
         Task<Order> Update(int id, UpdateOrderModel model);
 
