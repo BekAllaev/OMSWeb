@@ -10,7 +10,7 @@ namespace OMSWeb.Queries.Queries
 {
     public class OrderQueryProcessor : IOrderQueryProcessor
     {
-        public Task<Order> Create(CreateOrderDTO model)
+        public Task<Order> Create(WriteOrderDTO model)
         {
             throw new NotImplementedException();
         }
@@ -25,12 +25,17 @@ namespace OMSWeb.Queries.Queries
             throw new NotImplementedException();
         }
 
-        public Order Get(int id)
+        public Order GetWithDetails(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Order> Update(int id, UpdateOrderDTO model)
+        public NotDetailedOrderDTO GetWithoutDetails(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Order> Update(int id, WriteOrderDTO model)
         {
             throw new NotImplementedException();
         }

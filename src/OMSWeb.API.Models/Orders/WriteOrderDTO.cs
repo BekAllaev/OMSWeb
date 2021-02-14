@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OMSWeb.API.Models.Orders
 {
-    public class CreateOrderDTO
+    public class WriteOrderDTO
     {
         [Required]
         public string CustomerID { get; set; }
