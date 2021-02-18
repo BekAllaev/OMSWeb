@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OMSWeb.API.Models.Orders
+namespace OMSWeb.Dto.Model.OrderDto
 {
-    public class NotDetailedOrderDTO
+    public class OrderDtoWithoutDetails
     {
         public int OrderID { get; set; }
         public string CustomerID { get; set; }

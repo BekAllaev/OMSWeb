@@ -1,4 +1,4 @@
-﻿using OMSWeb.API.Models.Orders;
+﻿using OMSWeb.Dto.Model.OrderDto;
 using OMSWeb.Data.Model;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace OMSWeb.Queries.Queries
 {
     public class OrderQueryProcessor : IOrderQueryProcessor
     {
-        public Task<Order> Create(WriteOrderDTO model)
+        public Task<Order> Create(OrderDtoForPutPost orderDto)
         {
             throw new NotImplementedException();
         }
@@ -25,17 +25,17 @@ namespace OMSWeb.Queries.Queries
             throw new NotImplementedException();
         }
 
-        public Order GetWithDetails(int id)
+        public OrderDtoWithDetails GetWithDetails(int id)
         {
             throw new NotImplementedException();
         }
 
-        public NotDetailedOrderDTO GetWithoutDetails(int id)
+        public OrderDtoWithoutDetails GetWithoutDetails(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Order> Update(int id, WriteOrderDTO model)
+        public Task<Order> Update(int id, OrderDtoForPutPost orderDto)
         {
             throw new NotImplementedException();
         }

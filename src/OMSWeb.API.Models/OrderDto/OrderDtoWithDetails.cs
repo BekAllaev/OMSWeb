@@ -1,49 +1,29 @@
 ﻿using OMSWeb.Data.Model;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace OMSWeb.API.Models.Orders
+namespace OMSWeb.Dto.Model.OrderDto
 {
-    public class WriteOrderDTO
+    public class OrderDtoWithDetails
     {
-        [Required]
+        public int OrderID { get; set; }
         public string CustomerID { get; set; }
-
-        [Required]
-        public int EmployeeID { get; set; }
-
-        [Required]
+        public int? EmployeeID { get; set; }
         public DateTime? OrderDate { get; set; }
-
-        [Required]
-        public int? ShipVia { get; set; }
-
         public DateTime? RequiredDate { get; set; }
-
         public DateTime? ShippedDate { get; set; }
-
+        public int? ShipVia { get; set; }
         public decimal? Freight { get; set; }
-
-        [StringLength(50)]
         public string ShipName { get; set; }
-
-        [StringLength(50)]
         public string ShipAddress { get; set; }
-
-        [StringLength(50)]
         public string ShipCity { get; set; }
-
-        [StringLength(50)]
         public string ShipRegion { get; set; }
-
-        [StringLength(50)]
         public string ShipPostalCode { get; set; }
-
-        [StringLength(50)]
         public string ShipCountry { get; set; }
 
-        [Required]
-        public IList<Order_Detail> OrderDetails { get; set; }
+        public IEnumerable<Order_Detail> Order_Details { get; set; }
     }
 }
