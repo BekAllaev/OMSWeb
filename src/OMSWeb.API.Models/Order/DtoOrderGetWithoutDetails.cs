@@ -1,14 +1,14 @@
-﻿using OMSWeb.Data.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OMSWeb.Dto.Model.OrderDto
+namespace OMSWeb.Dto.Model.Order
 {
-    public class OrderDtoForPutPost
+    public class DtoOrderGetWithoutDetails
     {
+        public int OrderID { get; set; }
         public string CustomerID { get; set; }
         public int? EmployeeID { get; set; }
         public DateTime? OrderDate { get; set; }
@@ -22,7 +22,5 @@ namespace OMSWeb.Dto.Model.OrderDto
         public string ShipRegion { get; set; }
         public string ShipPostalCode { get; set; }
         public string ShipCountry { get; set; }
-
-        public IEnumerable<Order_Detail> Order_Details { get; set; }
     }
 }

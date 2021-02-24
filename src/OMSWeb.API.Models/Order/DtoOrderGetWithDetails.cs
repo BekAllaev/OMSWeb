@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OMSWeb.Dto.Model.OrderDto
+namespace OMSWeb.Dto.Model.Order
 {
-    public class OrderDtoWithDetails
+    public class DtoOrderGetWithDetails
     {
         public int OrderID { get; set; }
         public string CustomerID { get; set; }

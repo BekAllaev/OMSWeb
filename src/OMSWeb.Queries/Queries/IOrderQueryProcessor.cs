@@ -1,4 +1,4 @@
-﻿using OMSWeb.Dto.Model.OrderDto;
+﻿using OMSWeb.Dto.Model.Order;
 using OMSWeb.Data.Model;
 using System;
 using System.Collections.Generic;
@@ -12,13 +12,13 @@ namespace OMSWeb.Queries.Queries
     {
         IQueryable<Order> Get();
 
-        OrderDtoWithDetails GetWithDetails(int id);
+        DtoOrderGetWithDetails GetWithDetails(int id);
 
-        OrderDtoWithoutDetails GetWithoutDetails(int id);
+        DtoOrderGetWithoutDetails GetWithoutDetails(int id);
 
-        Task<Order> Create(OrderDtoForPutPost orderDto);
+        Task<Order> Create(DtoOrderPutPost orderDto);
 
-        Task<Order> Update(int id, OrderDtoForPutPost orderDto);
+        Task<Order> Update(int id, DtoOrderPutPost orderDto);
 
         Task Delete(int id);
     }
