@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OMSWeb.Dto.Model.Order
+namespace OMSWeb.Dto.Model.OrderDto
 {
     public class DtoOrderGetWithoutDetails
     {

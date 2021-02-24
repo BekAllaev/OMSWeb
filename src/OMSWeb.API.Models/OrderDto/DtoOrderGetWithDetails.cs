@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OMSWeb.Dto.Model.Order
+namespace OMSWeb.Dto.Model.OrderDto
 {
-    public class DtoOrderPutPost
+    public class DtoOrderGetWithDetails
     {
+        public int OrderID { get; set; }
         public string CustomerID { get; set; }
         public int? EmployeeID { get; set; }
         public DateTime? OrderDate { get; set; }

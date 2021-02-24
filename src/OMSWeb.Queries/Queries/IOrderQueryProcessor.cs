@@ -1,4 +1,4 @@
-﻿using OMSWeb.Dto.Model.Order;
+﻿using OMSWeb.Dto.Model.OrderDto;
 using OMSWeb.Data.Model;
 using System;
 using System.Collections.Generic;
