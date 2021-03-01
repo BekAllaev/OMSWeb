@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OMSWeb.Dto.Model.EmployeeDto
 {
-    public class DtoEmployeePutPost
+    public class DtoEmployeePost
     {
         public string LastName { get; set; }
         public string FirstName { get; set; }

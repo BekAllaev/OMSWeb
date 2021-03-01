@@ -5,15 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OMSWeb.Dto.Model.EmployeeDto
+namespace OMSWeb.Dto.Model.ShipperDto
 {
-    public class DtoEmployeeGetOrders
+    public class DtoShipperPost
     {
-        public int EmployeeID { get; set; }
-        public string LastName { get; set; }
-        public string FirstName { get; set; }
+        public string CompanyName { get; set; }
+        public string Phone { get; set; }
 
         public IEnumerable<Order> Orders { get; set; }
-
     }
 }
