@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OMSWeb.Dto.Model.Supplier
+namespace OMSWeb.Dto.Model.SupplierDto
 {
     public class DtoSupplierPost
     {
