@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OMSWeb.API.Models\OMSWeb.Dto.Model.csproj" />
+    <ProjectReference Include="..\OMSWeb.Data.Access\OMSWeb.Data.Access.csproj" />
     <ProjectReference Include="..\OMSWeb.Data.Model\OMSWeb.Data.Model.csproj" />
   </ItemGroup>
 

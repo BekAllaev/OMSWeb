@@ -12,13 +12,13 @@ namespace OMSWeb.Queries.Queries
     {
         IQueryable<Order> Get();
 
-        DtoOrderGetWithDetails GetWithDetails(int id);
+        Task<Order> GetById(int id);
 
-        DtoOrderGetWithoutDetails GetWithoutDetails(int id);
+        Task<DtoOrderGetWithDetails> GetWithDetails(int id);
 
-        Task<Order> Create(DtoOrderPutPost orderDto);
+        Task<DtoOrderGetWithoutDetails> GetWithoutDetails(int id);
 
-        Task<Order> Update(int id, DtoOrderPutPost orderDto);
+        Task<Order> Create(DtoOrderPost orderDto);
 
         Task Delete(int id);
     }
