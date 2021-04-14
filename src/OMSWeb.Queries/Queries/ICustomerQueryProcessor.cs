@@ -12,12 +12,12 @@ namespace OMSWeb.Queries.Queries
     {
         IQueryable<Customer> Get();
 
-        Task<DtoCustomerGet> GetById(int id);
+        Task<DtoCustomerGet> GetById(string id);
 
-        Task<Customer> Update(int id, DtoCustomerPutPost dtoCustomerPut);
+        Task<Customer> Update(string id, DtoCustomerPutPost dtoCustomerPut);
 
         Task<Customer> Create(DtoCustomerPutPost dtoCustomerPost);
 
-        Task Delete(int id);
+        Task Delete(string id);
     }
 }

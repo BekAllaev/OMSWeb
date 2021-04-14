@@ -72,6 +72,8 @@ namespace OMSWeb.Queries.Queries
                 throw new KeyNotFoundException();
 
             unitOfWork.Delete(order);
+
+            unitOfWork.Commit();
         }
 
         public IQueryable<Order> Get()

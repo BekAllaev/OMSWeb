@@ -20,7 +20,5 @@ namespace OMSWeb.Dto.Model.SupplierDto
         public string Phone { get; set; }
         public string Fax { get; set; }
         public string HomePage { get; set; }
-
-        public IEnumerable<Product> Products { get; set; }
     }
 }
