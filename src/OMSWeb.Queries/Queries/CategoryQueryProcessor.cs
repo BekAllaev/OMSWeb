@@ -29,6 +29,7 @@ namespace OMSWeb.Queries.Queries
             };
 
             unitOfWork.Add(category);
+
             await unitOfWork.CommitAsync();
 
             var newCategory = await unitOfWork.Query<Category>().LastAsync();

@@ -59,7 +59,7 @@ namespace OMSWeb.Queries.Queries
                 }
             }
 
-            Order resultOrder = unitOfWork.Query<Order>().Last();
+            Order resultOrder = await unitOfWork.Query<Order>().LastAsync();
 
             return resultOrder;
         }

@@ -103,9 +103,7 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            var updatedProduct = await unitOfWork.Query<Product>().FirstAsync(p => p.ProductID == id);
-
-            return updatedProduct;
+            return product;
         }
     }
 }

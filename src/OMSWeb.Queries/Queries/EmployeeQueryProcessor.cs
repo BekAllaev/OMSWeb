@@ -125,9 +125,7 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            var updatedEmployee = await unitOfWork.Query<Employee>().FirstAsync(e => e.EmployeeID == id);
-
-            return updatedEmployee;
+            return employee;
         }
     }
 }

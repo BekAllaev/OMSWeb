@@ -11,7 +11,5 @@ namespace OMSWeb.Dto.Model.ShipperDto
     {
         public string CompanyName { get; set; }
         public string Phone { get; set; }
-
-        public IEnumerable<Order> Orders { get; set; }
     }
 }

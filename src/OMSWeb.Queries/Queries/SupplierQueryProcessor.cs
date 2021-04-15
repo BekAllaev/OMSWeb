@@ -112,9 +112,7 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            var updatedSupplier = await unitOfWork.Query<Supplier>().FirstAsync(s => s.SupplierID == id);
-
-            return updatedSupplier;
+            return supplier;
         }
     }
 }

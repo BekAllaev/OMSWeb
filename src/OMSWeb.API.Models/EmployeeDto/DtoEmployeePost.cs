@@ -26,7 +26,5 @@ namespace OMSWeb.Dto.Model.EmployeeDto
         public string Notes { get; set; }
         public int? ReportsTo { get; set; }
         public string PhotoPath { get; set; }
-
-        public IEnumerable<Order> Orders { get; set; }
     }
 }
