@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Hangfire.Core" Version="1.7.22" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\OMSWeb.API.Models\OMSWeb.Dto.Model.csproj" />
     <ProjectReference Include="..\OMSWeb.Data.Access\OMSWeb.Data.Access.csproj" />
     <ProjectReference Include="..\OMSWeb.Data.Model\OMSWeb.Data.Model.csproj" />

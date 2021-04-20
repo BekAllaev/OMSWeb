@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Hangfire;
+using Microsoft.EntityFrameworkCore;
 using OMSWeb.Data.Access.DAL;
 using OMSWeb.Data.Model;
 using OMSWeb.Dto.Model.CategoryDto;
+using OMSWeb.Queries.Caching.Enums;
+using OMSWeb.Queries.Caching.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +16,14 @@ namespace OMSWeb.Queries.Queries
     public class CategoryQueryProcessor : ICategoryQueryProcessor
     {
         IUnitOfWork unitOfWork;
+        Func<CacheTech, ICacheService> cacheService;
+        readonly string cacheKey = $"{typeof(Category)}";
+        readonly CacheTech cacheTech = CacheTech.Memory;
 
-        public CategoryQueryProcessor(IUnitOfWork unitOfWork)
+        public CategoryQueryProcessor(IUnitOfWork unitOfWork, Func<CacheTech, ICacheService> cacheService)
         {
             this.unitOfWork = unitOfWork;
+            this.cacheService = cacheService;
         }
 
         public async Task<Category> Create(DtoCategoryPost dtoCategoryPost)
@@ -34,6 +41,8 @@ namespace OMSWeb.Queries.Queries
 
             var newCategory = await unitOfWork.Query<Category>().LastAsync();
 
+            BackgroundJob.Enqueue(() => RefreshCache());
+
             return newCategory;
         }
 
@@ -46,11 +55,19 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Delete(category);
             unitOfWork.Commit();
+
+            BackgroundJob.Enqueue(() => RefreshCache());
         }
 
         public IQueryable<Category> Get()
         {
-            return unitOfWork.Query<Category>();
+            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Category> cachedList))
+            {
+                cachedList = unitOfWork.Query<Category>();
+                cacheService(cacheTech).Set(cacheKey, cachedList);
+            }
+
+            return cachedList;
         }
 
         public async Task<DtoCategoryGet> GetById(int id)
@@ -84,7 +101,16 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
+            BackgroundJob.Enqueue(() => RefreshCache());
+
             return category;
+        }
+
+        public async Task RefreshCache()
+        {
+            cacheService(cacheTech).Remove(cacheKey);
+            var cachedList = await unitOfWork.Query<Category>().ToListAsync();
+            cacheService(cacheTech).Set(cacheKey, cachedList);
         }
     }
 }
