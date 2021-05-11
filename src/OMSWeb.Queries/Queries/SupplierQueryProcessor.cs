@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Hangfire;
+using Microsoft.EntityFrameworkCore;
 using OMSWeb.Data.Access.DAL;
 using OMSWeb.Data.Model;
 using OMSWeb.Dto.Model.SupplierDto;
+using OMSWeb.Queries.Caching.Enums;
+using OMSWeb.Queries.Caching.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +16,14 @@ namespace OMSWeb.Queries.Queries
     public class SupplierQueryProcessor : ISupplierQueryProcessor
     {
         IUnitOfWork unitOfWork;
+        Func<CacheTech, ICacheService> cacheService;
+        readonly string cacheKey = $"{typeof(Supplier)}";
+        readonly CacheTech cacheTech = CacheTech.Memory;
 
-        public SupplierQueryProcessor(IUnitOfWork unitOfWork)
+        public SupplierQueryProcessor(IUnitOfWork unitOfWork, Func<CacheTech, ICacheService> cacheService)
         {
             this.unitOfWork = unitOfWork;
+            this.cacheService = cacheService;
         }
 
         public async Task<Supplier> Create(DtoSupplierPost dtoSupplierPost)
@@ -42,6 +49,8 @@ namespace OMSWeb.Queries.Queries
 
             var newSupplier = await unitOfWork.Query<Supplier>().LastAsync();
 
+            BackgroundJob.Enqueue(() => RefreshCache());
+
             return newSupplier;
         }
 
@@ -53,13 +62,20 @@ namespace OMSWeb.Queries.Queries
                 throw new KeyNotFoundException();
 
             unitOfWork.Delete(supplier);
-
             unitOfWork.Commit();
+
+            BackgroundJob.Enqueue(() => RefreshCache());
         }
 
         public IQueryable<Supplier> Get()
         {
-            return unitOfWork.Query<Supplier>();
+            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Supplier> cachedList))
+            {
+                cachedList = unitOfWork.Query<Supplier>();
+                cacheService(cacheTech).Set(cacheKey, cachedList);
+            }
+
+            return cachedList;
         }
 
         public async Task<DtoSupplierGet> GetById(int id)
@@ -112,7 +128,16 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
+            BackgroundJob.Enqueue(() => RefreshCache());
+
             return supplier;
+        }
+
+        public async Task RefreshCache()
+        {
+            cacheService(cacheTech).Remove(cacheKey);
+            var cachedList = await unitOfWork.Query<Supplier>().ToListAsync();
+            cacheService(cacheTech).Set(cacheKey, cachedList);
         }
     }
 }

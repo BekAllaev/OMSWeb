@@ -7,16 +7,23 @@ using System.Text;
 using System.Threading.Tasks;
 using OMSWeb.Data.Access.DAL;
 using Microsoft.EntityFrameworkCore;
+using OMSWeb.Queries.Caching.Enums;
+using OMSWeb.Queries.Caching.Services;
+using Hangfire;
 
 namespace OMSWeb.Queries.Queries
 {
     public class OrderQueryProcessor : IOrderQueryProcessor
     {
         IUnitOfWork unitOfWork;
+        Func<CacheTech, ICacheService> cacheService;
+        readonly string cacheKey = $"{typeof(Order)}";
+        readonly CacheTech cacheTech = CacheTech.Memory;
 
-        public OrderQueryProcessor(IUnitOfWork unitOfWork)
+        public OrderQueryProcessor(IUnitOfWork unitOfWork, Func<CacheTech, ICacheService> cacheService)
         {
             this.unitOfWork = unitOfWork;
+            this.cacheService = cacheService;
         }
 
         public async Task<Order> Create(DtoOrderPost orderDto)
@@ -61,6 +68,8 @@ namespace OMSWeb.Queries.Queries
 
             Order resultOrder = await unitOfWork.Query<Order>().LastAsync();
 
+            BackgroundJob.Enqueue(() => RefreshCache());
+
             return resultOrder;
         }
 
@@ -74,11 +83,19 @@ namespace OMSWeb.Queries.Queries
             unitOfWork.Delete(order);
 
             unitOfWork.Commit();
+
+            BackgroundJob.Enqueue(() => RefreshCache());
         }
 
         public IQueryable<Order> Get()
         {
-            return unitOfWork.Query<Order>();
+            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Order> cachedList))
+            {
+                cachedList = unitOfWork.Query<Order>();
+                cacheService(cacheTech).Set(cacheKey, cachedList);
+            }
+
+            return cachedList;
         }
 
         public async Task<Order> GetById(int id)
@@ -140,6 +157,18 @@ namespace OMSWeb.Queries.Queries
             };
 
             return orderWithoutDetails;
+        }
+
+        public async Task RefreshCache()
+        {
+            cacheService(cacheTech).Remove(cacheKey);
+            cacheService(cacheTech).Remove($"{typeof(Order_Detail)}");
+
+            var cachedOrders = await unitOfWork.Query<Order>().ToListAsync();
+            var cachedOrderDetails = await unitOfWork.Query<Order_Detail>().ToListAsync();
+
+            cacheService(cacheTech).Set(cacheKey, cachedOrders);
+            cacheService(cacheTech).Set(cacheKey, cachedOrderDetails);
         }
     }
 }

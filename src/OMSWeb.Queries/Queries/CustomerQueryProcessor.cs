@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Hangfire;
+using Microsoft.EntityFrameworkCore;
 using OMSWeb.Data.Access.DAL;
 using OMSWeb.Data.Model;
 using OMSWeb.Dto.Model.CutomerDto;
+using OMSWeb.Queries.Caching.Enums;
+using OMSWeb.Queries.Caching.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +16,14 @@ namespace OMSWeb.Queries.Queries
     public class CustomerQueryProcessor : ICustomerQueryProcessor
     {
         IUnitOfWork unitOfWork;
+        Func<CacheTech, ICacheService> cacheService;
+        readonly string cacheKey = $"{typeof(Customer)}";
+        readonly CacheTech cacheTech = CacheTech.Memory;
 
-        public CustomerQueryProcessor(IUnitOfWork unitOfWork)
+        public CustomerQueryProcessor(IUnitOfWork unitOfWork, Func<CacheTech, ICacheService> cacheService)
         {
             this.unitOfWork = unitOfWork;
+            this.cacheService = cacheService;
         }
 
         public async Task<Customer> Create(DtoCustomerPutPost dtoCustomerPost)
@@ -40,6 +47,8 @@ namespace OMSWeb.Queries.Queries
 
             var newCustomer = await unitOfWork.Query<Customer>().LastAsync();
 
+            BackgroundJob.Enqueue(() => RefreshCache());
+
             return newCustomer;
         }
 
@@ -52,11 +61,19 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Delete(customer);
             unitOfWork.Commit();
+
+            BackgroundJob.Enqueue(() => RefreshCache());
         }
 
         public IQueryable<Customer> Get()
         {
-            return unitOfWork.Query<Customer>();
+            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Customer> cachedList))
+            {
+                cachedList = unitOfWork.Query<Customer>();
+                cacheService(cacheTech).Set(cacheKey, cachedList);
+            }
+
+            return cachedList;
         }
 
         public async Task<DtoCustomerGet> GetById(string id)
@@ -105,7 +122,16 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
+            BackgroundJob.Enqueue(() => RefreshCache());
+
             return customer;
+        }
+
+        public async Task RefreshCache()
+        {
+            cacheService(cacheTech).Remove(cacheKey);
+            var cachedList = await unitOfWork.Query<Customer>().ToListAsync();
+            cacheService(cacheTech).Set(cacheKey, cachedList);
         }
     }
 }
