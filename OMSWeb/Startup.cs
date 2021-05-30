@@ -1,4 +1,4 @@
-using Hangfire;
+using Hangfire; //NuGet - Hangfire
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +49,8 @@ namespace OMSWeb
             services.AddMemoryCache();
             services.AddTransient<MemoryCacheService>();
 
+            //Register delegate that returns cache service implementation thus no need in service registration
+            //that depends on this cache service
             services.AddTransient<Func<CacheTech, ICacheService>>(serviceProvider => key =>
             {
                 switch (key)

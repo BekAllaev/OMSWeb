@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace OMSWeb.Queries.Caching.Enums
 {
+    /// <summary>
+    /// Cache-stores
+    /// </summary>
     public enum CacheTech
     {
         Memory,
