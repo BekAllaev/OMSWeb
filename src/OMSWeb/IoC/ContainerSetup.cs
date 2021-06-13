@@ -1,4 +1,4 @@
-﻿using Hangfire;
+﻿using Hangfire; //NuGet - Hangfire
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +15,10 @@ using System.Runtime.CompilerServices;
 
 namespace OMSWeb.IoC
 {
+    /// <summary>
+    /// Methods that add/configure dependencies or service
+    /// Motivation for this class is to remove addition and configuration of dependencies from <see cref="Startup"/> class
+    /// </summary>
     public static class ContainerSetup
     {
         public static void Setup(IServiceCollection services, IConfiguration configuration)
