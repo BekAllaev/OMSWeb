@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoQueryable.AspNetCore.Filter" Version="1.7.0" />
     <PackageReference Include="Bogus" Version="33.0.2" />
     <PackageReference Include="Hangfire" Version="1.7.22" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.5" />
@@ -15,12 +17,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\OMSWeb.Data.Access\OMSWeb.Data.Access.csproj" />
-    <ProjectReference Include="..\src\OMSWeb.Queries\OMSWeb.Queries.csproj" />
+    <ProjectReference Include="..\OMSWeb.Queries\OMSWeb.Queries.csproj" />
   </ItemGroup>
 
 </Project>
