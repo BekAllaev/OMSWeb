@@ -18,10 +18,16 @@ namespace OMSWeb
         public static void Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
+            bool isDataFake;
 
             var config = host.Services.GetRequiredService<IConfiguration>();
 
-            bool isDataFake = bool.Parse(config["IsDataFake"]);
+            var dataSource = config["DataSource"];
+
+            if (dataSource is "SqlServer")
+                isDataFake = false;
+            else
+                isDataFake = true;
 
             if (isDataFake)
             {

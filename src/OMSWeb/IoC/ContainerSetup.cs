@@ -1,13 +1,16 @@
 ﻿using Hangfire; //NuGet - Hangfire
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OMSWeb.Common.DataMock;
 using OMSWeb.Data.Access.DAL;
+using OMSWeb.Maps;
 using OMSWeb.Queries.Caching.Configuration;
 using OMSWeb.Queries.Caching.Enums;
 using OMSWeb.Queries.Caching.Services;
 using OMSWeb.Queries.Queries;
+using OMSWeb.Services.Pagination;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -26,6 +29,8 @@ namespace OMSWeb.IoC
             AddUoW(services, configuration);
             AddQueryProcessors(services);
             AddCaching(services, configuration);
+            AddPagination(services);
+            ConfigureAutoMapper(services);
         }
 
         private static void AddUoW(IServiceCollection services, IConfiguration configuration)
@@ -35,9 +40,9 @@ namespace OMSWeb.IoC
             services.AddSingleton<FakeDataGenerator>();
 
             if (dataSource is "Bogus")
-                services.AddDbContext<NorthwindContext>(options => options.UseInMemoryDatabase("NorthwindContext"));
+                services.AddDbContext<NorthwindContext>(options => options.UseInMemoryDatabase("NorthwindContext"), ServiceLifetime.Singleton);
             else if (dataSource is "SqlServer")
-                services.AddDbContext<NorthwindContext>(options => options.UseSqlServer(configuration.GetConnectionString("SqlConnection")));
+                services.AddDbContext<NorthwindContext>(options => options.UseSqlServer(configuration.GetConnectionString("SqlConnection")), ServiceLifetime.Singleton);
 
             services.AddScoped<IUnitOfWork>(ctx => new EFUnitOfWork(ctx.GetRequiredService<NorthwindContext>()));
         }
@@ -77,8 +82,28 @@ namespace OMSWeb.IoC
                 }
             });
 
-            //services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("SqlConnection")));
+            services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("SqlConnection")));
             services.AddHangfireServer();
+        }
+
+        private static void AddPagination(IServiceCollection services)
+        {
+            services.AddHttpContextAccessor();
+            services.AddSingleton<IUriService>(o =>
+            {
+                var accessor = o.GetRequiredService<IHttpContextAccessor>();
+                var request = accessor.HttpContext.Request;
+                var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+                return new UriService(uri);
+            });
+        }
+
+        private static void ConfigureAutoMapper(IServiceCollection services)
+        {
+            var mapperConfig = AutoMapperConfigurator.Configure();
+            var mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(x => mapper);
+            services.AddTransient<IAutoMapper, AutoMapperAdapter>();
         }
     }
 }
