@@ -23,7 +23,7 @@ namespace OMSWeb.Controllers
         private readonly IAutoMapper autoMapper;
         private readonly IUriService uriService;
 
-        public CategoriesController(ICategoryQueryProcessor queryProcessor, IAutoMapper autoMapper,IUriService uriService)
+        public CategoriesController(ICategoryQueryProcessor queryProcessor, IAutoMapper autoMapper, IUriService uriService)
         {
             this.queryProcessor = queryProcessor;
             this.autoMapper = autoMapper;
@@ -61,7 +61,7 @@ namespace OMSWeb.Controllers
         // PUT: api/Categories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<DtoCategoryGet> PutCategory(int id, [FromBody]DtoCategoryPut dtoCategory)
+        public async Task<DtoCategoryGet> PutCategory(int id, [FromBody] DtoCategoryPut dtoCategory)
         {
             var item = await queryProcessor.Update(id, dtoCategory);
             var model = autoMapper.Map<DtoCategoryGet>(item);
@@ -71,7 +71,7 @@ namespace OMSWeb.Controllers
         // POST: api/Categories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<DtoCategoryGet> PostCategory([FromBody]DtoCategoryPost dtoCategory)
+        public async Task<DtoCategoryGet> PostCategory([FromBody] DtoCategoryPost dtoCategory)
         {
             var item = await queryProcessor.Create(dtoCategory);
 
