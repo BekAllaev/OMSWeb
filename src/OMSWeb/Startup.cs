@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using OMSWeb.IoC;
+using OMSWeb.Middleware;
 
 namespace OMSWeb
 {
@@ -48,6 +49,8 @@ namespace OMSWeb
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UsePageSizeCaching();
 
             app.UseHangfireDashboard("/jobs");
 
