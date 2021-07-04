@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OMSWeb.Maps
+namespace OMSWeb.Services.Maps
 {
     public class AutoMapperAdapter : IAutoMapper
     {

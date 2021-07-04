@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OMSWeb.Common.DataMock;
 using OMSWeb.Data.Access.DAL;
-using OMSWeb.Maps;
+using OMSWeb.Services.Maps;
 using OMSWeb.Queries.Caching.Configuration;
 using OMSWeb.Queries.Caching.Enums;
 using OMSWeb.Queries.Caching.Services;

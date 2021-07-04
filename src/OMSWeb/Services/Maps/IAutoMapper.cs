@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OMSWeb.Maps
+namespace OMSWeb.Services.Maps
 {
     /// <summary>
     /// Wrapper above <see cref="IMapper"/> 
