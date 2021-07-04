@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using OMSWeb.Data.Access.DAL;
 using OMSWeb.Data.Model;
 using OMSWeb.Dto.Model.CategoryDto;
-using OMSWeb.Maps;
+using OMSWeb.Services.Maps;
 using OMSWeb.Queries.Queries;
 using OMSWeb.Services.Pagination;
 using OMSWeb.Wrappers;
@@ -43,8 +43,10 @@ namespace OMSWeb.Controllers
 
             var pagedData = await pagedDataQuery.ToListAsync();
 
+            var resultCollection = autoMapper.Map<List<DtoCategoryGet>>(pagedData);
+
             var totalRecords = await queryProcessor.Get().CountAsync();
-            var pagedReponse = PaginationHelper.CreatePagedReponse<Category>(pagedData, validPaginationInfo, totalRecords, uriService, route);
+            var pagedReponse = PaginationHelper.CreatePagedReponse<DtoCategoryGet>(resultCollection, validPaginationInfo, totalRecords, uriService, route);
 
             return Ok(pagedReponse);
         }
