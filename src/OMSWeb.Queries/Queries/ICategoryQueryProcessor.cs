@@ -12,7 +12,7 @@ namespace OMSWeb.Queries.Queries
     {
         IQueryable<Category> Get();
 
-        Task<DtoCategoryGet> GetById(int id);
+        Task<Category> GetById(int id);
 
         Task<Category> Update(int id, DtoCategoryPut dtoCategoryPut);
 

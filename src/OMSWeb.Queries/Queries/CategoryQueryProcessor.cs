@@ -39,9 +39,9 @@ namespace OMSWeb.Queries.Queries
 
             await unitOfWork.CommitAsync();
 
-            var newCategory = await unitOfWork.Query<Category>().LastAsync();
+            var newCategory = await unitOfWork.Query<Category>().OrderBy(x => x.CategoryID).LastAsync();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
 
             return newCategory;
         }
@@ -56,37 +56,30 @@ namespace OMSWeb.Queries.Queries
             unitOfWork.Delete(category);
             unitOfWork.Commit();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
         }
 
         public IQueryable<Category> Get()
         {
-            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Category> cachedList))
-            {
-                cachedList = unitOfWork.Query<Category>();
-                cacheService(cacheTech).Set(cacheKey, cachedList);
-            }
+            //if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Category> cachedList))
+            //{
+            //    cachedList = unitOfWork.Query<Category>();
+            //    cacheService(cacheTech).Set(cacheKey, cachedList);
+            //}
 
-            return cachedList;
+            //return cachedList;
+
+            return unitOfWork.Query<Category>();
         }
 
-        public async Task<DtoCategoryGet> GetById(int id)
+        public async Task<Category> GetById(int id)
         {
             var category = await unitOfWork.Query<Category>().FirstAsync(c => c.CategoryID == id);
 
             if (category == null)
                 throw new KeyNotFoundException();
 
-            var categoryDto = new DtoCategoryGet()
-            {
-                CategoryID = category.CategoryID,
-                CategoryName = category.CategoryName,
-                Description = category.Description,
-                Picture = category.Picture,
-                Products = category.Products
-            };
-
-            return categoryDto;
+            return category;
         }
 
         public async Task<Category> Update(int id, DtoCategoryPut dtoCategoryPut)
@@ -101,16 +94,16 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
 
             return category;
         }
 
-        public async Task RefreshCache()
-        {
-            cacheService(cacheTech).Remove(cacheKey);
-            var cachedList = await unitOfWork.Query<Category>().ToListAsync();
-            cacheService(cacheTech).Set(cacheKey, cachedList);
-        }
+        //public async Task RefreshCache()
+        //{
+        //    cacheService(cacheTech).Remove(cacheKey);
+        //    var cachedList = unitOfWork.Query<Category>();
+        //    cacheService(cacheTech).Set(cacheKey, cachedList);
+        //}
     }
 }

@@ -46,14 +46,14 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            var newProduct = await unitOfWork.Query<Product>().LastAsync();
+            var newProduct = await unitOfWork.Query<Product>().OrderBy(x => x.ProductID).LastOrDefaultAsync();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
 
             return newProduct;
         }
 
-        public async  Task Delete(int id)
+        public async Task Delete(int id)
         {
             var product = await unitOfWork.Query<Product>().FirstOrDefaultAsync(p => p.ProductID == id);
 
@@ -63,42 +63,30 @@ namespace OMSWeb.Queries.Queries
             unitOfWork.Delete(product);
             unitOfWork.Commit();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
         }
 
         public IQueryable<Product> Get()
         {
-            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Product> cachedList))
-            {
-                cachedList = unitOfWork.Query<Product>();
-                cacheService(cacheTech).Set(cacheKey, cachedList);
-            }
+            //if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Product> cachedList))
+            //{
+            //    cachedList = unitOfWork.Query<Product>();
+            //    cacheService(cacheTech).Set(cacheKey, cachedList.ToList());
+            //}
 
-            return cachedList;
+            //return cachedList;
+
+            return unitOfWork.Query<Product>();
         }
 
-        public async Task<DtoProductGet> GetById(int id)
+        public async Task<Product> GetById(int id)
         {
             var product = await unitOfWork.Query<Product>().FirstOrDefaultAsync(p => p.ProductID == id);
 
             if (product == null)
                 throw new KeyNotFoundException();
 
-            var productDto = new DtoProductGet()
-            {
-                ProductID = product.ProductID,
-                CategoryID = product.CategoryID,
-                SupplierID = product.SupplierID,
-                ProductName = product.ProductName,
-                Discontinued = product.Discontinued,
-                QuantityPerUnit = product.QuantityPerUnit,
-                UnitPrice = product.UnitPrice,
-                ReorderLevel = product.ReorderLevel,
-                UnitsInStock = product.UnitsInStock,
-                UnitsOnOrder = product.UnitsOnOrder
-            };
-
-            return productDto;
+            return product;
         }
 
         public async Task<Product> Update(int id, DtoProductPut dtoProductPut)
@@ -120,16 +108,16 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
 
             return product;
         }
 
-        public async Task RefreshCache()
-        {
-            cacheService(cacheTech).Remove(cacheKey);
-            var cachedList = await unitOfWork.Query<Product>().ToListAsync();
-            cacheService(cacheTech).Set(cacheKey, cachedList);
-        }
+        //public async Task RefreshCache()
+        //{
+        //    cacheService(cacheTech).Remove(cacheKey);
+        //    var cachedList = await unitOfWork.Query<Product>().ToListAsync();
+        //    cacheService(cacheTech).Set(cacheKey, cachedList);
+        //}
     }
 }

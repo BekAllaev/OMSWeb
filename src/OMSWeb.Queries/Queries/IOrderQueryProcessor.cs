@@ -14,10 +14,6 @@ namespace OMSWeb.Queries.Queries
 
         Task<Order> GetById(int id);
 
-        Task<DtoOrderGetWithDetails> GetWithDetails(int id);
-
-        Task<DtoOrderGetWithoutDetails> GetWithoutDetails(int id);
-
         Task<Order> Create(DtoOrderPost orderDto);
 
         Task Delete(int id);

@@ -66,9 +66,9 @@ namespace OMSWeb.Queries.Queries
                 }
             }
 
-            Order resultOrder = await unitOfWork.Query<Order>().LastAsync();
+            Order resultOrder = await unitOfWork.Query<Order>().OrderBy(x => x.OrderID).LastAsync();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
 
             return resultOrder;
         }
@@ -84,91 +84,39 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
         }
 
         public IQueryable<Order> Get()
         {
-            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Order> cachedList))
-            {
-                cachedList = unitOfWork.Query<Order>();
-                cacheService(cacheTech).Set(cacheKey, cachedList);
-            }
+            //if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Order> cachedList))
+            //{
+            //    cachedList = unitOfWork.Query<Order>();
+            //    cacheService(cacheTech).Set(cacheKey, cachedList);
+            //}
 
-            return cachedList;
+            //return cachedList;
+
+            return unitOfWork.Query<Order>();
         }
 
         public async Task<Order> GetById(int id)
         {
-            var order = await unitOfWork.Query<Order>().FirstOrDefaultAsync(o => o.OrderID == id);
-
-            if (order == null)
-                throw new KeyNotFoundException();
+            var order = await unitOfWork.Query<Order>().Include(order => order.Order_Details).FirstAsync(o => o.OrderID == id);
 
             return order;
         }
 
-        public async Task<DtoOrderGetWithDetails> GetWithDetails(int id)
-        {
-            var order = await unitOfWork.Query<Order>().FirstAsync(o => o.OrderID == id);
+        //public async Task RefreshCache()
+        //{
+        //    cacheService(cacheTech).Remove(cacheKey);
+        //    cacheService(cacheTech).Remove($"{typeof(Order_Detail)}");
 
-            DtoOrderGetWithDetails orderWithDetails = new DtoOrderGetWithDetails()
-            {
-                OrderID = order.OrderID,
-                CustomerID = order.CustomerID,
-                EmployeeID = order.EmployeeID,
-                ShipAddress = order.ShipAddress,
-                ShipCity = order.ShipCity,
-                ShipCountry = order.ShipCountry,
-                ShipName = order.ShipName,
-                ShippedDate = order.ShippedDate,
-                ShipPostalCode = order.ShipPostalCode,
-                ShipRegion = order.ShipRegion,
-                ShipVia = order.ShipVia,
-                Freight = order.Freight,
-                OrderDate = order.OrderDate,
-                RequiredDate = order.RequiredDate,
-                Order_Details = order.Order_Details
-            };
+        //    var cachedOrders = await unitOfWork.Query<Order>().ToListAsync();
+        //    var cachedOrderDetails = await unitOfWork.Query<Order_Detail>().ToListAsync();
 
-            return orderWithDetails;
-        }
-
-        public async Task<DtoOrderGetWithoutDetails> GetWithoutDetails(int id)
-        {
-            var order = await unitOfWork.Query<Order>().FirstAsync(o => o.OrderID == id);
-
-            DtoOrderGetWithoutDetails orderWithoutDetails = new DtoOrderGetWithoutDetails()
-            {
-                OrderID = order.OrderID,
-                CustomerID = order.CustomerID,
-                EmployeeID = order.EmployeeID,
-                ShipAddress = order.ShipAddress,
-                ShipCity = order.ShipCity,
-                ShipCountry = order.ShipCountry,
-                ShipName = order.ShipName,
-                ShippedDate = order.ShippedDate,
-                ShipPostalCode = order.ShipPostalCode,
-                ShipRegion = order.ShipRegion,
-                ShipVia = order.ShipVia,
-                Freight = order.Freight,
-                OrderDate = order.OrderDate,
-                RequiredDate = order.RequiredDate,
-            };
-
-            return orderWithoutDetails;
-        }
-
-        public async Task RefreshCache()
-        {
-            cacheService(cacheTech).Remove(cacheKey);
-            cacheService(cacheTech).Remove($"{typeof(Order_Detail)}");
-
-            var cachedOrders = await unitOfWork.Query<Order>().ToListAsync();
-            var cachedOrderDetails = await unitOfWork.Query<Order_Detail>().ToListAsync();
-
-            cacheService(cacheTech).Set(cacheKey, cachedOrders);
-            cacheService(cacheTech).Set(cacheKey, cachedOrderDetails);
-        }
+        //    cacheService(cacheTech).Set(cacheKey, cachedOrders);
+        //    cacheService(cacheTech).Set(cacheKey, cachedOrderDetails);
+        //}
     }
 }

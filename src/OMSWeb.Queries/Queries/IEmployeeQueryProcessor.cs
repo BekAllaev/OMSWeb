@@ -12,7 +12,7 @@ namespace OMSWeb.Queries.Queries
     {
         IQueryable<Employee> Get();
 
-        Task<DtoEmployeeGet> GetById(int id);
+        Task<Employee> GetById(int id);
 
         Task<Employee> Update(int id, DtoEmployeePut dtoEmployeePut);
 

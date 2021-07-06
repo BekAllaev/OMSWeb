@@ -11,7 +11,8 @@ namespace OMSWeb.Queries.Queries
     public interface IShipperQueryProcessor
     {
         IQueryable<Shipper> Get();
-        Task<DtoShipperGet> GetById(int id); 
+
+        Task<Shipper> GetById(int id); 
         
         Task<Shipper> Update(int id, DtoShipperPut dtoShipperPut);
 

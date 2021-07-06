@@ -47,9 +47,9 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            var newSupplier = await unitOfWork.Query<Supplier>().LastAsync();
+            var newSupplier = await unitOfWork.Query<Supplier>().OrderBy(x => x.SupplierID).LastAsync();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
 
             return newSupplier;
         }
@@ -64,45 +64,30 @@ namespace OMSWeb.Queries.Queries
             unitOfWork.Delete(supplier);
             unitOfWork.Commit();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
         }
 
         public IQueryable<Supplier> Get()
         {
-            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Supplier> cachedList))
-            {
-                cachedList = unitOfWork.Query<Supplier>();
-                cacheService(cacheTech).Set(cacheKey, cachedList);
-            }
+            //if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Supplier> cachedList))
+            //{
+            //    cachedList = unitOfWork.Query<Supplier>();
+            //    cacheService(cacheTech).Set(cacheKey, cachedList);
+            //}
 
-            return cachedList;
+            //return cachedList;
+
+            return unitOfWork.Query<Supplier>();
         }
 
-        public async Task<DtoSupplierGet> GetById(int id)
+        public async Task<Supplier> GetById(int id)
         {
             var supplier = await unitOfWork.Query<Supplier>().FirstOrDefaultAsync(s => s.SupplierID == id);
 
             if (supplier == null)
                 throw new KeyNotFoundException();
 
-            var supplierDto = new DtoSupplierGet()
-            {
-                SupplierID = supplier.SupplierID,
-                CompanyName = supplier.CompanyName,
-                ContactName = supplier.ContactName,
-                ContactTitle = supplier.ContactTitle,
-                Address = supplier.Address,
-                City = supplier.City,
-                Region = supplier.Region,
-                PostalCode = supplier.PostalCode,
-                Country = supplier.Country,
-                Phone = supplier.Phone,
-                Fax = supplier.Fax,
-                HomePage = supplier.HomePage,
-                Products = supplier.Products
-            };
-
-            return supplierDto;
+            return supplier;
         }
 
         public async Task<Supplier> Update(int id, DtoSupplierPut dtoSupplierPut)
@@ -128,16 +113,16 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
 
             return supplier;
         }
 
-        public async Task RefreshCache()
-        {
-            cacheService(cacheTech).Remove(cacheKey);
-            var cachedList = await unitOfWork.Query<Supplier>().ToListAsync();
-            cacheService(cacheTech).Set(cacheKey, cachedList);
-        }
+        //public async Task RefreshCache()
+        //{
+        //    cacheService(cacheTech).Remove(cacheKey);
+        //    var cachedList = await unitOfWork.Query<Supplier>().ToListAsync();
+        //    cacheService(cacheTech).Set(cacheKey, cachedList);
+        //}
     }
 }

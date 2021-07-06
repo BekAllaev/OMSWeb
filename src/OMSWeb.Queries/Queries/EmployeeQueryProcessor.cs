@@ -52,9 +52,9 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            var newEmployee = await unitOfWork.Query<Employee>().LastAsync();
+            var newEmployee = await unitOfWork.Query<Employee>().OrderBy(x => x.EmployeeID).LastAsync();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
 
             return newEmployee;
         }
@@ -69,51 +69,30 @@ namespace OMSWeb.Queries.Queries
             unitOfWork.Delete(employee);
             unitOfWork.Commit();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
         }
 
         public IQueryable<Employee> Get()
         {
-            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Employee> cachedList))
-            {
-                cachedList = unitOfWork.Query<Employee>();
-                cacheService(cacheTech).Set(cacheKey, cachedList);
-            }
+            //if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Employee> cachedList))
+            //{
+            //    cachedList = unitOfWork.Query<Employee>();
+            //    cacheService(cacheTech).Set(cacheKey, cachedList);
+            //}
 
-            return cachedList;
+            //return cachedList;
+
+            return unitOfWork.Query<Employee>();
         }
 
-        public async Task<DtoEmployeeGet> GetById(int id)
+        public async Task<Employee> GetById(int id)
         {
             var employee = await unitOfWork.Query<Employee>().FirstOrDefaultAsync(e => e.EmployeeID == id);
 
             if (employee == null)
                 throw new KeyNotFoundException();
 
-            var employeeDto = new DtoEmployeeGet()
-            {
-                EmployeeID = employee.EmployeeID,
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                Address = employee.Address,
-                Photo = employee.Photo,
-                PhotoPath = employee.PhotoPath,
-                BirthDate = employee.BirthDate,
-                City = employee.City,
-                Country = employee.Country,
-                Extension = employee.Extension,
-                HireDate = employee.HireDate,
-                HomePhone = employee.HomePhone,
-                Notes = employee.Notes,
-                TitleOfCourtesy = employee.TitleOfCourtesy,
-                Title = employee.Title,
-                Region = employee.Region,
-                Orders = employee.Orders,
-                PostalCode = employee.PostalCode,
-                ReportsTo = employee.ReportsTo
-            };
-
-            return employeeDto;
+            return employee;
         }
 
         public async Task<Employee> Update(int id, DtoEmployeePut dtoEmployeePut)
@@ -141,16 +120,16 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
 
             return employee;
         }
 
-        public async Task RefreshCache()
-        {
-            cacheService(cacheTech).Remove(cacheKey);
-            var cachedList = await unitOfWork.Query<Employee>().ToListAsync();
-            cacheService(cacheTech).Set(cacheKey, cachedList);
-        }
+        //public async Task RefreshCache()
+        //{
+        //    cacheService(cacheTech).Remove(cacheKey);
+        //    var cachedList = await unitOfWork.Query<Employee>().ToListAsync();
+        //    cacheService(cacheTech).Set(cacheKey, cachedList);
+        //}
     }
 }

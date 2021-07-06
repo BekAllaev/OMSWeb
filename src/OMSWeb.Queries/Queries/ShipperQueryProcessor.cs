@@ -39,9 +39,9 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            var newShipper = await unitOfWork.Query<Shipper>().LastAsync();
+            var newShipper = await unitOfWork.Query<Shipper>().OrderBy(x => x.ShipperID).LastAsync();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
 
             return newShipper;
         }
@@ -55,36 +55,30 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Delete(shipper);
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
         }
 
         public IQueryable<Shipper> Get()
         {
-            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Shipper> cachedList))
-            {
-                cachedList = unitOfWork.Query<Shipper>();
-                cacheService(cacheTech).Set(cacheKey, cachedList);
-            }
+            //if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Shipper> cachedList))
+            //{
+            //    cachedList = unitOfWork.Query<Shipper>();
+            //    cacheService(cacheTech).Set(cacheKey, cachedList);
+            //}
 
-            return cachedList;
+            //return cachedList;
+
+            return unitOfWork.Query<Shipper>();
         }
 
-        public async Task<DtoShipperGet> GetById(int id)
+        public async Task<Shipper> GetById(int id)
         {
             var shipper = await unitOfWork.Query<Shipper>().FirstOrDefaultAsync(s => s.ShipperID == id);
 
             if (shipper == null)
                 throw new KeyNotFoundException();
 
-            var shipperDto = new DtoShipperGet()
-            {
-                ShipperID = shipper.ShipperID,
-                CompanyName = shipper.CompanyName,
-                Phone = shipper.Phone,
-                Orders = shipper.Orders
-            };
-
-            return shipperDto;
+            return shipper;
         }
 
         public async Task<Shipper> Update(int id, DtoShipperPut dtoShipperPut)
@@ -99,16 +93,16 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
 
             return shipper;
         }
 
-        public async Task RefreshCache()
-        {
-            cacheService(cacheTech).Remove(cacheKey);
-            var cachedList = await unitOfWork.Query<Shipper>().ToListAsync();
-            cacheService(cacheTech).Set(cacheKey, cachedList);
-        }
+        //public async Task RefreshCache()
+        //{
+        //    cacheService(cacheTech).Remove(cacheKey);
+        //    var cachedList = await unitOfWork.Query<Shipper>().ToListAsync();
+        //    cacheService(cacheTech).Set(cacheKey, cachedList);
+        //}
     }
 }

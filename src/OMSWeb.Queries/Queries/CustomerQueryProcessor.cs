@@ -45,9 +45,9 @@ namespace OMSWeb.Queries.Queries
             unitOfWork.Add(customer);
             await unitOfWork.CommitAsync();
 
-            var newCustomer = await unitOfWork.Query<Customer>().LastAsync();
+            var newCustomer = await unitOfWork.Query<Customer>().OrderBy(x => x.CustomerID).LastAsync();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
 
             return newCustomer;
         }
@@ -62,44 +62,30 @@ namespace OMSWeb.Queries.Queries
             unitOfWork.Delete(customer);
             unitOfWork.Commit();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
         }
 
         public IQueryable<Customer> Get()
         {
-            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Customer> cachedList))
-            {
-                cachedList = unitOfWork.Query<Customer>();
-                cacheService(cacheTech).Set(cacheKey, cachedList);
-            }
+            //if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Customer> cachedList))
+            //{
+            //    cachedList = unitOfWork.Query<Customer>();
+            //    cacheService(cacheTech).Set(cacheKey, cachedList);
+            //}
 
-            return cachedList;
+            //return cachedList;
+
+            return unitOfWork.Query<Customer>();
         }
 
-        public async Task<DtoCustomerGet> GetById(string id)
+        public async Task<Customer> GetById(string id)
         {
             var customer = await unitOfWork.Query<Customer>().FirstOrDefaultAsync(c => c.CustomerID == id);
 
             if (customer == null)
                 throw new KeyNotFoundException();
 
-            var customerDto = new DtoCustomerGet()
-            {
-                CustomerID = customer.CustomerID,
-                CompanyName = customer.CompanyName,
-                ContactName = customer.ContactName,
-                City = customer.City,
-                ContactTitle = customer.ContactTitle,
-                Country = customer.Country,
-                PostalCode = customer.PostalCode,
-                Address = customer.Address,
-                Phone = customer.Phone,
-                Region = customer.Region,
-                Fax = customer.Fax,
-                Orders = customer.Orders
-            };
-
-            return customerDto;
+            return customer;
         }
 
         public async Task<Customer> Update(string id, DtoCustomerPutPost dtoCustomerPut)
@@ -122,16 +108,16 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            BackgroundJob.Enqueue(() => RefreshCache());
+            //BackgroundJob.Enqueue(() => RefreshCache());
 
             return customer;
         }
 
-        public async Task RefreshCache()
-        {
-            cacheService(cacheTech).Remove(cacheKey);
-            var cachedList = await unitOfWork.Query<Customer>().ToListAsync();
-            cacheService(cacheTech).Set(cacheKey, cachedList);
-        }
+        //public async Task RefreshCache()
+        //{
+        //    cacheService(cacheTech).Remove(cacheKey);
+        //    var cachedList = await unitOfWork.Query<Customer>().ToListAsync();
+        //    cacheService(cacheTech).Set(cacheKey, cachedList);
+        //}
     }
 }
