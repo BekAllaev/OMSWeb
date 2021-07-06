@@ -37,15 +37,18 @@ namespace OMSWeb.Controllers
             var validPaginationInfo = new PaginationInfo(pageSize, pageNumber);
             var route = Request.Path.Value;
 
-            var pagedDataQuery = queryProcessor.Get()
+            var query = queryProcessor.Get();
+
+            var pagedDataQuery = query
                 .Skip(((int)validPaginationInfo.PageNumber - 1) * (int)validPaginationInfo.PageSize)
-                .Take((int)validPaginationInfo.PageSize);
+                .Take((int)validPaginationInfo.PageSize)
+                .Include(category => category.Products);
 
             var pagedData = await pagedDataQuery.ToListAsync();
 
             var resultCollection = autoMapper.Map<List<DtoCategoryGet>>(pagedData);
 
-            var totalRecords = await queryProcessor.Get().CountAsync();
+            var totalRecords = await query.CountAsync();
             var pagedReponse = PaginationHelper.CreatePagedReponse<DtoCategoryGet>(resultCollection, validPaginationInfo, totalRecords, uriService, route);
 
             return Ok(pagedReponse);
