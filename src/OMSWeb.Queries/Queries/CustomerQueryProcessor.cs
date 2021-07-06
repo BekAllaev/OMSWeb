@@ -19,6 +19,7 @@ namespace OMSWeb.Queries.Queries
         Func<CacheTech, ICacheService> cacheService;
         readonly string cacheKey = $"{typeof(Customer)}";
         readonly CacheTech cacheTech = CacheTech.Memory;
+        private static Random random = new Random();
 
         public CustomerQueryProcessor(IUnitOfWork unitOfWork, Func<CacheTech, ICacheService> cacheService)
         {
@@ -28,8 +29,17 @@ namespace OMSWeb.Queries.Queries
 
         public async Task<Customer> Create(DtoCustomerPutPost dtoCustomerPost)
         {
+            string id;
+
+            do
+            {
+                id = GenerateId(5);
+            }
+            while (await unitOfWork.Query<Customer>().FirstOrDefaultAsync(x => x.CustomerID == id) is not null);
+
             var customer = new Customer()
             {
+                CustomerID = id,
                 CompanyName = dtoCustomerPost.CompanyName,
                 ContactName = dtoCustomerPost.ContactName,
                 ContactTitle = dtoCustomerPost.ContactTitle,
@@ -45,7 +55,7 @@ namespace OMSWeb.Queries.Queries
             unitOfWork.Add(customer);
             await unitOfWork.CommitAsync();
 
-            var newCustomer = await unitOfWork.Query<Customer>().OrderBy(x => x.CustomerID).LastAsync();
+            var newCustomer = await unitOfWork.Query<Customer>().FirstAsync(x => x.CustomerID == id);
 
             //BackgroundJob.Enqueue(() => RefreshCache());
 
@@ -119,5 +129,12 @@ namespace OMSWeb.Queries.Queries
         //    var cachedList = await unitOfWork.Query<Customer>().ToListAsync();
         //    cacheService(cacheTech).Set(cacheKey, cachedList);
         //}
+
+        private string GenerateId(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
     }
 }
