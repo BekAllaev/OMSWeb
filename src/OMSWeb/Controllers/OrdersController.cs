@@ -43,11 +43,11 @@ namespace OMSWeb.Controllers
                 .Take((int)validPaginationInfo.PageSize)
                 .Include(order => order.Order_Details);
 
-            var pagedData = await pagedDataQuery.ToListAsync();
+            var pagedData = pagedDataQuery.ToList();
 
             var resultCollection = autoMapper.Map<List<DtoOrderGetWithDetails>>(pagedData);
 
-            var totalRecords = await query.CountAsync();
+            var totalRecords = query.Count();
             var pagedReponse = PaginationHelper.CreatePagedReponse<DtoOrderGetWithDetails>(resultCollection, validPaginationInfo, totalRecords, uriService, route);
 
             return Ok(pagedReponse);

@@ -44,11 +44,11 @@ namespace OMSWeb.Controllers
                 .Skip(((int)validPaginationInfo.PageNumber - 1) * (int)validPaginationInfo.PageSize)
                 .Take((int)validPaginationInfo.PageSize);
 
-            var pagedData = await pagedDataQuery.ToListAsync();
+            var pagedData = pagedDataQuery.ToList();
 
             var resultCollection = autoMapper.Map<List<DtoProductGet>>(pagedData);
 
-            var totalRecords = await query.CountAsync();
+            var totalRecords = query.Count();
             var pagedReponse = PaginationHelper.CreatePagedReponse<DtoProductGet>(resultCollection, validPaginationInfo, totalRecords, uriService, route);
 
             return Ok(pagedReponse);

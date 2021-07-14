@@ -42,11 +42,11 @@ namespace OMSWeb.Controllers
                 .Skip(((int)validPaginationInfo.PageNumber - 1) * (int)validPaginationInfo.PageSize)
                 .Take((int)validPaginationInfo.PageSize);
 
-            var pagedData = await pagedDataQuery.ToListAsync();
+            var pagedData = pagedDataQuery.ToList();
 
             var resultCollection = autoMapper.Map<List<DtoEmployeeGet>>(pagedData);
 
-            var totalRecords = await query.CountAsync();
+            var totalRecords = query.Count();
             var pagedReponse = PaginationHelper.CreatePagedReponse<DtoEmployeeGet>(resultCollection, validPaginationInfo, totalRecords, uriService, route);
 
             return Ok(pagedReponse);
