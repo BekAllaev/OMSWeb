@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using OMSWeb.Queries.Caching.Enums;
 using OMSWeb.Queries.Caching.Services;
 using Hangfire;
+using OMSWeb.Queries.Interfaces;
 
 namespace OMSWeb.Queries.Queries
 {

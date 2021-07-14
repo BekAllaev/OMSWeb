@@ -5,6 +5,7 @@ using OMSWeb.Data.Model;
 using OMSWeb.Dto.Model.CutomerDto;
 using OMSWeb.Queries.Caching.Enums;
 using OMSWeb.Queries.Caching.Services;
+using OMSWeb.Queries.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

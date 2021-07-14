@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OMSWeb.Queries.Queries
+namespace OMSWeb.Queries.Interfaces
 {
     public interface IOrderQueryProcessor
     {

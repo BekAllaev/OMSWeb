@@ -12,6 +12,7 @@ using OMSWeb.Services.Maps;
 using OMSWeb.Queries.Queries;
 using OMSWeb.Services.Pagination;
 using OMSWeb.Wrappers;
+using OMSWeb.Queries.Interfaces;
 
 namespace OMSWeb.Controllers
 {

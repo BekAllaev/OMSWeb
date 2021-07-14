@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OMSWeb.Dto.Model.SupplierDto;
+using OMSWeb.Queries.Interfaces;
 using OMSWeb.Queries.Queries;
 using OMSWeb.Services.Maps;
 using OMSWeb.Services.Pagination;
