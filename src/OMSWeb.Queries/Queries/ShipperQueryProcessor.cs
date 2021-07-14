@@ -42,7 +42,7 @@ namespace OMSWeb.Queries.Queries
 
             var newShipper = await unitOfWork.Query<Shipper>().OrderBy(x => x.ShipperID).LastAsync();
 
-            //BackgroundJob.Enqueue(() => RefreshCache());
+            BackgroundJob.Enqueue(() => RefreshCache());
 
             return newShipper;
         }
@@ -56,20 +56,18 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Delete(shipper);
 
-            //BackgroundJob.Enqueue(() => RefreshCache());
+            BackgroundJob.Enqueue(() => RefreshCache());
         }
 
         public IQueryable<Shipper> Get()
         {
-            //if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Shipper> cachedList))
-            //{
-            //    cachedList = unitOfWork.Query<Shipper>();
-            //    cacheService(cacheTech).Set(cacheKey, cachedList);
-            //}
+            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Shipper> cachedList))
+            {
+                cachedList = unitOfWork.Query<Shipper>();
+                cacheService(cacheTech).Set(cacheKey, cachedList.ToList());
+            }
 
-            //return cachedList;
-
-            return unitOfWork.Query<Shipper>();
+            return cachedList;
         }
 
         public async Task<Shipper> GetById(int id)
@@ -94,16 +92,16 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            //BackgroundJob.Enqueue(() => RefreshCache());
+            BackgroundJob.Enqueue(() => RefreshCache());
 
             return shipper;
         }
 
-        //public async Task RefreshCache()
-        //{
-        //    cacheService(cacheTech).Remove(cacheKey);
-        //    var cachedList = await unitOfWork.Query<Shipper>().ToListAsync();
-        //    cacheService(cacheTech).Set(cacheKey, cachedList);
-        //}
+        public async Task RefreshCache()
+        {
+            cacheService(cacheTech).Remove(cacheKey);
+            var list = await unitOfWork.Query<Shipper>().ToListAsync();
+            cacheService(cacheTech).Set(cacheKey, list);
+        }
     }
 }

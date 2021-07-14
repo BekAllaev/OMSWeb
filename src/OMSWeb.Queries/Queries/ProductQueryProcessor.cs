@@ -49,7 +49,7 @@ namespace OMSWeb.Queries.Queries
 
             var newProduct = await unitOfWork.Query<Product>().OrderBy(x => x.ProductID).LastOrDefaultAsync();
 
-            //BackgroundJob.Enqueue(() => RefreshCache());
+            BackgroundJob.Enqueue(() => RefreshCache());
 
             return newProduct;
         }
@@ -64,20 +64,18 @@ namespace OMSWeb.Queries.Queries
             unitOfWork.Delete(product);
             unitOfWork.Commit();
 
-            //BackgroundJob.Enqueue(() => RefreshCache());
+            BackgroundJob.Enqueue(() => RefreshCache());
         }
 
         public IQueryable<Product> Get()
         {
-            //if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Product> cachedList))
-            //{
-            //    cachedList = unitOfWork.Query<Product>();
-            //    cacheService(cacheTech).Set(cacheKey, cachedList.ToList());
-            //}
+            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Product> cachedList))
+            {
+                cachedList = unitOfWork.Query<Product>();
+                cacheService(cacheTech).Set(cacheKey, cachedList.ToList());
+            }
 
-            //return cachedList;
-
-            return unitOfWork.Query<Product>();
+            return cachedList;
         }
 
         public async Task<Product> GetById(int id)
@@ -109,16 +107,16 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            //BackgroundJob.Enqueue(() => RefreshCache());
+            BackgroundJob.Enqueue(() => RefreshCache());
 
             return product;
         }
 
-        //public async Task RefreshCache()
-        //{
-        //    cacheService(cacheTech).Remove(cacheKey);
-        //    var cachedList = await unitOfWork.Query<Product>().ToListAsync();
-        //    cacheService(cacheTech).Set(cacheKey, cachedList);
-        //}
+        public async Task RefreshCache()
+        {
+            cacheService(cacheTech).Remove(cacheKey);
+            var list = await unitOfWork.Query<Product>().ToListAsync();
+            cacheService(cacheTech).Set(cacheKey, list);
+        }
     }
 }

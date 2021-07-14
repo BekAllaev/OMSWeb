@@ -58,7 +58,7 @@ namespace OMSWeb.Queries.Queries
 
             var newCustomer = await unitOfWork.Query<Customer>().FirstAsync(x => x.CustomerID == id);
 
-            //BackgroundJob.Enqueue(() => RefreshCache());
+            BackgroundJob.Enqueue(() => RefreshCache());
 
             return newCustomer;
         }
@@ -73,20 +73,18 @@ namespace OMSWeb.Queries.Queries
             unitOfWork.Delete(customer);
             unitOfWork.Commit();
 
-            //BackgroundJob.Enqueue(() => RefreshCache());
+            BackgroundJob.Enqueue(() => RefreshCache());
         }
 
         public IQueryable<Customer> Get()
         {
-            //if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Customer> cachedList))
-            //{
-            //    cachedList = unitOfWork.Query<Customer>();
-            //    cacheService(cacheTech).Set(cacheKey, cachedList);
-            //}
+            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Customer> cachedList))
+            {
+                cachedList = unitOfWork.Query<Customer>();
+                cacheService(cacheTech).Set(cacheKey, cachedList.ToList());
+            }
 
-            //return cachedList;
-
-            return unitOfWork.Query<Customer>();
+            return cachedList;
         }
 
         public async Task<Customer> GetById(string id)
@@ -119,17 +117,17 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            //BackgroundJob.Enqueue(() => RefreshCache());
+            BackgroundJob.Enqueue(() => RefreshCache());
 
             return customer;
         }
 
-        //public async Task RefreshCache()
-        //{
-        //    cacheService(cacheTech).Remove(cacheKey);
-        //    var cachedList = await unitOfWork.Query<Customer>().ToListAsync();
-        //    cacheService(cacheTech).Set(cacheKey, cachedList);
-        //}
+        public async Task RefreshCache()
+        {
+            cacheService(cacheTech).Remove(cacheKey);
+            var list = await unitOfWork.Query<Customer>().ToListAsync();
+            cacheService(cacheTech).Set(cacheKey, list);
+        }
 
         private string GenerateId(int length)
         {

@@ -42,7 +42,7 @@ namespace OMSWeb.Queries.Queries
 
             var newCategory = await unitOfWork.Query<Category>().OrderBy(x => x.CategoryID).LastAsync();
 
-            //BackgroundJob.Enqueue(() => RefreshCache());
+            BackgroundJob.Enqueue(() => RefreshCache());
 
             return newCategory;
         }
@@ -57,20 +57,18 @@ namespace OMSWeb.Queries.Queries
             unitOfWork.Delete(category);
             unitOfWork.Commit();
 
-            //BackgroundJob.Enqueue(() => RefreshCache());
+            BackgroundJob.Enqueue(() => RefreshCache());
         }
 
         public IQueryable<Category> Get()
         {
-            //if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Category> cachedList))
-            //{
-            //    cachedList = unitOfWork.Query<Category>();
-            //    cacheService(cacheTech).Set(cacheKey, cachedList);
-            //}
+            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Category> cachedList))
+            {
+                cachedList = unitOfWork.Query<Category>();
+                cacheService(cacheTech).Set(cacheKey, cachedList.ToList());
+            }
 
-            //return cachedList;
-
-            return unitOfWork.Query<Category>();
+            return cachedList;
         }
 
         public async Task<Category> GetById(int id)
@@ -95,16 +93,16 @@ namespace OMSWeb.Queries.Queries
 
             unitOfWork.Commit();
 
-            //BackgroundJob.Enqueue(() => RefreshCache());
+            BackgroundJob.Enqueue(() => RefreshCache());
 
             return category;
         }
 
-        //public async Task RefreshCache()
-        //{
-        //    cacheService(cacheTech).Remove(cacheKey);
-        //    var cachedList = unitOfWork.Query<Category>();
-        //    cacheService(cacheTech).Set(cacheKey, cachedList);
-        //}
+        public async Task RefreshCache()
+        {
+            cacheService(cacheTech).Remove(cacheKey);
+            var list = await unitOfWork.Query<Category>().ToListAsync();
+            cacheService(cacheTech).Set(cacheKey, list);
+        }
     }
 }
