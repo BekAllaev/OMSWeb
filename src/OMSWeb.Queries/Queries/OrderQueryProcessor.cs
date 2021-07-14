@@ -11,6 +11,7 @@ using OMSWeb.Queries.Caching.Enums;
 using OMSWeb.Queries.Caching.Services;
 using Hangfire;
 using OMSWeb.Queries.Interfaces;
+using OMSWeb.Queries.Extensions;
 
 namespace OMSWeb.Queries.Queries
 {
@@ -90,13 +91,9 @@ namespace OMSWeb.Queries.Queries
 
         public IQueryable<Order> Get()
         {
-            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Order> cachedList))
-            {
-                cachedList = unitOfWork.Query<Order>();
-                cacheService(cacheTech).Set(cacheKey, cachedList.ToList());
-            }
+            var result = cacheService(cacheTech).GetCacheOrQuery<Order>(unitOfWork, cacheKey);
 
-            return cachedList;
+            return result;
         }
 
         public async Task<Order> GetById(int id)

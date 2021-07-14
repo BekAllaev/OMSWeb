@@ -5,6 +5,7 @@ using OMSWeb.Data.Model;
 using OMSWeb.Dto.Model.ProductDto;
 using OMSWeb.Queries.Caching.Enums;
 using OMSWeb.Queries.Caching.Services;
+using OMSWeb.Queries.Extensions;
 using OMSWeb.Queries.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace OMSWeb.Queries.Queries
         readonly CacheTech cacheTech = CacheTech.Memory;
 
 
-        public ProductQueryProcessor(IUnitOfWork unitOfWork, Func<CacheTech,ICacheService> cacheService)
+        public ProductQueryProcessor(IUnitOfWork unitOfWork, Func<CacheTech, ICacheService> cacheService)
         {
             this.unitOfWork = unitOfWork;
             this.cacheService = cacheService;
@@ -69,13 +70,9 @@ namespace OMSWeb.Queries.Queries
 
         public IQueryable<Product> Get()
         {
-            if (!cacheService(cacheTech).TryGet(cacheKey, out IQueryable<Product> cachedList))
-            {
-                cachedList = unitOfWork.Query<Product>();
-                cacheService(cacheTech).Set(cacheKey, cachedList.ToList());
-            }
+            var result = cacheService(cacheTech).GetCacheOrQuery<Product>(unitOfWork, cacheKey);
 
-            return cachedList;
+            return result;
         }
 
         public async Task<Product> GetById(int id)
