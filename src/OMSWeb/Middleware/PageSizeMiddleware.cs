@@ -28,15 +28,17 @@ namespace OMSWeb.Middleware
 
         public async Task InvokeAsync(HttpContext httpContext)
         {
+            var key = httpContext.Request.Path + PAGE_SIZE_LITERAL;
+
             if (StringValues.IsNullOrEmpty(httpContext.Request.Query[PAGE_SIZE_LITERAL]))
             {
-                if (memoryCache.TryGetValue(PAGE_SIZE_LITERAL, out pageSize))
+                if (memoryCache.TryGetValue(key, out pageSize))
                 {
                     List<KeyValuePair<string, StringValues>> keyValuesParameters = new List<KeyValuePair<string, StringValues>>();
 
-                    var queryCollection = httpContext.Request.Query;
+                    var queries = httpContext.Request.Query;
 
-                    foreach (var query in queryCollection)
+                    foreach (var query in queries)
                     {
                         if (query.Key == PAGE_SIZE_LITERAL)
                             keyValuesParameters.Add(new KeyValuePair<string, StringValues>(PAGE_SIZE_LITERAL, new StringValues(pageSize.ToString())));
@@ -50,7 +52,7 @@ namespace OMSWeb.Middleware
             else
             {
                 int pageSize = Convert.ToInt16(httpContext.Request.Query[PAGE_SIZE_LITERAL]);
-                memoryCache.Set(PAGE_SIZE_LITERAL, pageSize);
+                memoryCache.Set(key, pageSize);
             }
 
             await next(httpContext);

@@ -13,6 +13,7 @@ using OMSWeb.Queries.Queries;
 using OMSWeb.Services.Pagination;
 using OMSWeb.Wrappers;
 using OMSWeb.Queries.Interfaces;
+using OMSWeb.Extensions;
 
 namespace OMSWeb.Controllers
 {
@@ -35,24 +36,11 @@ namespace OMSWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCategories([FromQuery] uint pageNumber, [FromQuery] uint pageSize)
         {
-            var validPaginationInfo = new PaginationInfo(pageSize, pageNumber);
-            var route = Request.Path.Value;
+            var pagedData = queryProcessor.Get().PaginateQuery(pageNumber, pageSize).Include(category => category.Products).ToList();
 
-            var query = queryProcessor.Get();
+            var pagedResponse = pagedData.GetPagedResponse<Category, DtoCategoryGet>(autoMapper, uriService, Request.Path.Value, pageNumber, pageSize, queryProcessor.Get().Count());
 
-            var pagedDataQuery = query
-                .Skip(((int)validPaginationInfo.PageNumber - 1) * (int)validPaginationInfo.PageSize)
-                .Take((int)validPaginationInfo.PageSize)
-                .Include(category => category.Products);
-
-            var pagedData = pagedDataQuery.ToList();
-
-            var resultCollection = autoMapper.Map<List<DtoCategoryGet>>(pagedData);
-
-            var totalRecords = query.Count();
-            var pagedReponse = PaginationHelper.CreatePagedReponse<DtoCategoryGet>(resultCollection, validPaginationInfo, totalRecords, uriService, route);
-
-            return Ok(pagedReponse);
+            return Ok(pagedResponse);
         }
 
         // GET: api/Categories/5

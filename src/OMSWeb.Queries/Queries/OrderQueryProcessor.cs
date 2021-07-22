@@ -106,13 +106,10 @@ namespace OMSWeb.Queries.Queries
         public async Task RefreshCache()
         {
             cacheService(cacheTech).Remove(cacheKey);
-            cacheService(cacheTech).Remove($"{typeof(Order_Detail)}");
 
             var orders = await unitOfWork.Query<Order>().ToListAsync();
-            var orderDetails = await unitOfWork.Query<Order_Detail>().ToListAsync();
 
             cacheService(cacheTech).Set(cacheKey, orders);
-            cacheService(cacheTech).Set(cacheKey, orderDetails);
         }
     }
 }

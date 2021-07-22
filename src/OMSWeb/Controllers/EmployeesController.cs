@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OMSWeb.Data.Model;
 using OMSWeb.Dto.Model.EmployeeDto;
+using OMSWeb.Extensions;
 using OMSWeb.Queries.Interfaces;
 using OMSWeb.Queries.Queries;
 using OMSWeb.Services.Maps;
@@ -33,23 +35,11 @@ namespace OMSWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> GetEmployees([FromQuery] uint pageNumber, [FromQuery] uint pageSize)
         {
-            var validPaginationInfo = new PaginationInfo(pageSize, pageNumber);
-            var route = Request.Path.Value;
+            var pagedData = queryProcessor.Get().PaginateQuery(pageNumber, pageSize).ToList();
 
-            var query = queryProcessor.Get();
+            var pagedResponse = pagedData.GetPagedResponse<Employee, DtoEmployeeGet>(autoMapper, uriService, Request.Path.Value, pageNumber, pageSize, queryProcessor.Get().Count());
 
-            var pagedDataQuery = query
-                .Skip(((int)validPaginationInfo.PageNumber - 1) * (int)validPaginationInfo.PageSize)
-                .Take((int)validPaginationInfo.PageSize);
-
-            var pagedData = pagedDataQuery.ToList();
-
-            var resultCollection = autoMapper.Map<List<DtoEmployeeGet>>(pagedData);
-
-            var totalRecords = query.Count();
-            var pagedReponse = PaginationHelper.CreatePagedReponse<DtoEmployeeGet>(resultCollection, validPaginationInfo, totalRecords, uriService, route);
-
-            return Ok(pagedReponse);
+            return Ok(pagedResponse);
         }
 
         // GET: api/Employees/5
