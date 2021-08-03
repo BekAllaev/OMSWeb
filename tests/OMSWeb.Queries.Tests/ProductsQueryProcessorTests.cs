@@ -34,11 +34,11 @@ namespace OMSWeb.Queries.Tests
             unitOfWork = new();
             products = new();
 
-            //Look this link to see what BuildMockDbSet method do
+            //Look this link to see what BuildMock method do
             //https://github.com/romantitov/MockQueryable#how-do-i-get-started
-            var mockDbSet = products.AsQueryable().BuildMock();
+            var mock = products.AsQueryable().BuildMock();
 
-            unitOfWork.Setup(x => x.Query<Product>()).Returns(mockDbSet.Object);
+            unitOfWork.Setup(x => x.Query<Product>()).Returns(mock.Object);
             unitOfWork.Setup(x => x.Delete(It.IsAny<Product>())).Callback<Product>(product => products.Remove(product));
             unitOfWork.Setup(x => x.Add(It.IsAny<Product>())).Callback<Product>(product => products.Add(product));
             unitOfWork.Setup(x => x.Update(It.IsAny<Product>())).Callback<Product>(product =>
