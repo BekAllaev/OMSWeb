@@ -17,17 +17,19 @@ using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.SqlServer;
 using OMSWeb.Dto.Model.ProductDto;
+using OMSWeb.Queries.Tests.Configuration;
+using Microsoft.Extensions.Configuration;
 
 namespace OMSWeb.Queries.Tests
 {
-    public class ProductsQueryProcessorTests
+    public class ProductQueryProcessorTests
     {
         private Mock<IUnitOfWork> unitOfWork;
 
         private List<Product> products;
         private IProductQueryProcessor productsQueryProcessor;
 
-        public ProductsQueryProcessorTests()
+        public ProductQueryProcessorTests()
         {
             Func<CacheTech, ICacheService> func = cacheTech => new Mock<ICacheService>().Object;
 
@@ -48,7 +50,7 @@ namespace OMSWeb.Queries.Tests
                 item = product;
             });
 
-            JobStorage.Current = new SqlServerStorage("Data Source = .\\SQLEXPRESS; Initial Catalog = Northwind; Integrated Security =SSPI");
+            JobStorage.Current = new SqlServerStorage(ConfigExtensions.GetConfiguration().GetConnectionString("SqlConnection"));
 
             productsQueryProcessor = new ProductQueryProcessor(unitOfWork.Object, func);
         }
