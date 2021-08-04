@@ -27,7 +27,7 @@ namespace OMSWeb.Queries.Tests
         private Mock<IUnitOfWork> unitOfWork;
 
         private List<Product> products;
-        private IProductQueryProcessor productsQueryProcessor;
+        private IProductQueryProcessor productQueryProcessor;
 
         public ProductQueryProcessorTests()
         {
@@ -52,7 +52,7 @@ namespace OMSWeb.Queries.Tests
 
             JobStorage.Current = new SqlServerStorage(ConfigExtensions.GetConfiguration().GetConnectionString("SqlConnection"));
 
-            productsQueryProcessor = new ProductQueryProcessor(unitOfWork.Object, func);
+            productQueryProcessor = new ProductQueryProcessor(unitOfWork.Object, func);
         }
 
         [Fact]
@@ -60,7 +60,7 @@ namespace OMSWeb.Queries.Tests
         {
             products.Add(new Product() { ProductID = 1, ProductName = "Product1" });
 
-            var result = productsQueryProcessor.Get().ToList();
+            var result = productQueryProcessor.Get().ToList();
             result.Count.Should().Be(1);
         }
 
@@ -72,7 +72,7 @@ namespace OMSWeb.Queries.Tests
 
             var id = products[0].ProductID;
 
-            var result = await productsQueryProcessor.GetById(id);
+            var result = await productQueryProcessor.GetById(id);
             result.ProductID.Should().Be(id);
         }
 
@@ -81,7 +81,7 @@ namespace OMSWeb.Queries.Tests
         {
             Func<Task> func = async () =>
             {
-                await productsQueryProcessor.GetById(1);
+                await productQueryProcessor.GetById(1);
             };
 
             func.Should().Throw<KeyNotFoundException>();
@@ -94,7 +94,7 @@ namespace OMSWeb.Queries.Tests
 
             products.Add(new Product() { ProductID = id });
 
-            await productsQueryProcessor.Delete(id);
+            await productQueryProcessor.Delete(id);
 
             products.Should().HaveCount(0);
 
@@ -104,7 +104,7 @@ namespace OMSWeb.Queries.Tests
         [Fact]
         public void DeleteShouldThrowExceptionIfNotFound()
         {
-            Func<Task> func = async () => await productsQueryProcessor.Delete(1);
+            Func<Task> func = async () => await productQueryProcessor.Delete(1);
 
             func.Should().Throw<KeyNotFoundException>();
         }
@@ -112,7 +112,7 @@ namespace OMSWeb.Queries.Tests
         [Fact]
         public async Task CreateShouldSaveNew()
         {
-            var product = await productsQueryProcessor.Create(new DtoProductPost()
+            var product = await productQueryProcessor.Create(new DtoProductPost()
             {
                 ProductName = "Product1"
             });
@@ -131,7 +131,7 @@ namespace OMSWeb.Queries.Tests
 
             int newUnitPrice = 10;
 
-            var product = await productsQueryProcessor.Update(id, new DtoProductPut() { UnitPrice = newUnitPrice });
+            var product = await productQueryProcessor.Update(id, new DtoProductPut() { UnitPrice = newUnitPrice });
 
             product.UnitPrice.Should().Be(newUnitPrice);
 
@@ -141,7 +141,7 @@ namespace OMSWeb.Queries.Tests
         [Fact]
         public void UpdateShouldThrowExceptionIfNotFound()
         {
-            Func<Task> func = async () => await productsQueryProcessor.Update(1, new DtoProductPut());
+            Func<Task> func = async () => await productQueryProcessor.Update(1, new DtoProductPut());
 
             func.Should().Throw<KeyNotFoundException>();
         }

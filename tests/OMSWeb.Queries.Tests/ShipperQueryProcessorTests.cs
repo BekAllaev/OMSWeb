@@ -44,7 +44,7 @@ namespace OMSWeb.Queries.Tests
             unitOfWork.Setup(x => x.Add(It.IsAny<Shipper>())).Callback<Shipper>(shipper => shippers.Add(shipper));
             unitOfWork.Setup(x => x.Update(It.IsAny<Shipper>())).Callback<Shipper>(shipper =>
             {
-                var item = shippers.Find(x => shipper.ShipperID == shipper.ShipperID);
+                var item = shippers.Find(x => x.ShipperID == shipper.ShipperID);
 
                 item = shipper;
             });
@@ -126,7 +126,7 @@ namespace OMSWeb.Queries.Tests
         {
             int id = 1;
 
-            shippers.Add(new Shipper() { ShipperID = id, CompanyName = "Product1", Phone="123-45-67"});
+            shippers.Add(new Shipper() { ShipperID = id, CompanyName = "Shipper1", Phone="123-45-67"});
 
             string newPhone = "123-45-67-89";
 
