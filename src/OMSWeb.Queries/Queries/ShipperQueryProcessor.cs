@@ -56,6 +56,7 @@ namespace OMSWeb.Queries.Queries
                 throw new KeyNotFoundException();
 
             unitOfWork.Delete(shipper);
+            unitOfWork.Commit();
 
             BackgroundJob.Enqueue(() => RefreshCache());
         }
