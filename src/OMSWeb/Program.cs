@@ -29,9 +29,9 @@ if (isDataFake)
     //1. Find the service layer within our scope.
     using (var scope = host.Services.CreateScope())
     {
-        //2. Get the instance of BoardGamesDBContext in our services layer
         var services = scope.ServiceProvider;
 
+        //2. Get the instance of NorthwindContext 
         var context = services.GetRequiredService<NorthwindContext>();
         var generator = services.GetRequiredService<FakeDataGenerator>();
 
