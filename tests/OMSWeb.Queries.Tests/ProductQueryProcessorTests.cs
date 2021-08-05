@@ -79,10 +79,7 @@ namespace OMSWeb.Queries.Tests
         [Fact]
         public void GetByIdShouldThrowExceptionIfNotFound()
         {
-            Func<Task> func = async () =>
-            {
-                await productQueryProcessor.GetById(1);
-            };
+            Func<Task> func = async () => await productQueryProcessor.GetById(1);
 
             func.Should().Throw<KeyNotFoundException>();
         }

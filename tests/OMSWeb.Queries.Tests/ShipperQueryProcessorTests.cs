@@ -78,10 +78,7 @@ namespace OMSWeb.Queries.Tests
         [Fact]
         public void GetByIdShouldThrowExceptionIfNotFound()
         {
-            Func<Task> func = async () =>
-            {
-                await shipperQueryProcessor.GetById(1);
-            };
+            Func<Task> func = async () => await shipperQueryProcessor.GetById(1);
 
             func.Should().Throw<KeyNotFoundException>();
         }
@@ -126,7 +123,7 @@ namespace OMSWeb.Queries.Tests
         {
             int id = 1;
 
-            shippers.Add(new Shipper() { ShipperID = id, CompanyName = "Shipper1", Phone="123-45-67"});
+            shippers.Add(new Shipper() { ShipperID = id, CompanyName = "Shipper1", Phone = "123-45-67" });
 
             string newPhone = "123-45-67-89";
 
