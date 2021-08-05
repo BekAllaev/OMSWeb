@@ -23,10 +23,10 @@ namespace OMSWeb.Queries.Tests
 {
     public class SupplierQueryProcessorTests
     {
-        private Mock<IUnitOfWork> unitOfWork;
+        private readonly Mock<IUnitOfWork> unitOfWork;
 
-        private List<Supplier> suppliers;
-        private ISupplierQueryProcessor supplierQueryProcessor;
+        private readonly List<Supplier> suppliers;
+        private readonly ISupplierQueryProcessor supplierQueryProcessor;
 
         public SupplierQueryProcessorTests()
         {

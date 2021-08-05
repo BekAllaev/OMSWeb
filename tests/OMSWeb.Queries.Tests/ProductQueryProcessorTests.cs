@@ -24,10 +24,10 @@ namespace OMSWeb.Queries.Tests
 {
     public class ProductQueryProcessorTests
     {
-        private Mock<IUnitOfWork> unitOfWork;
+        private readonly Mock<IUnitOfWork> unitOfWork;
 
-        private List<Product> products;
-        private IProductQueryProcessor productQueryProcessor;
+        private readonly List<Product> products;
+        private readonly IProductQueryProcessor productQueryProcessor;
 
         public ProductQueryProcessorTests()
         {
