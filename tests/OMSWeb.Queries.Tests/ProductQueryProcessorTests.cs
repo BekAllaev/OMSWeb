@@ -1,24 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
-using FluentAssertions; //FluentAssertions
+﻿using FluentAssertions; //FluentAssertions
+using Hangfire;
+using Hangfire.SqlServer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using MockQueryable.Moq; //MockQueryable.Moq
 using Moq; //Moq
-using Xunit; //Xunit
 using OMSWeb.Data.Access.DAL;
 using OMSWeb.Data.Model;
+using OMSWeb.Dto.Model.ProductDto;
 using OMSWeb.Queries.Caching.Enums;
 using OMSWeb.Queries.Caching.Services;
 using OMSWeb.Queries.Interfaces;
 using OMSWeb.Queries.Queries;
+using OMSWeb.Queries.Tests.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Hangfire;
-using Hangfire.SqlServer;
-using OMSWeb.Dto.Model.ProductDto;
-using OMSWeb.Queries.Tests.Configuration;
-using Microsoft.Extensions.Configuration;
+using Xunit; //Xunit
 
 namespace OMSWeb.Queries.Tests
 {
