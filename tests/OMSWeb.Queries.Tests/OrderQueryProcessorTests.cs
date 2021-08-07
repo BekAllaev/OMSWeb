@@ -27,7 +27,7 @@ namespace OMSWeb.Queries.Tests
 
         public OrderQueryProcessorTests()
         {
-            ICacheService func(CacheTech cacheTech) => new Mock<ICacheService>().Object;
+            Func<CacheTech, ICacheService> func = cacheTech => new Mock<ICacheService>().Object;
 
             unitOfWork = new();
             orders = new();
