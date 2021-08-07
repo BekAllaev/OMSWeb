@@ -50,7 +50,7 @@ namespace OMSWeb.Queries.Queries
 
         public async Task Delete(int id)
         {
-            var category = await unitOfWork.Query<Category>().FirstAsync(c => c.CategoryID == id);
+            var category = await unitOfWork.Query<Category>().FirstOrDefaultAsync(c => c.CategoryID == id);
 
             if (category == null)
                 throw new KeyNotFoundException();
@@ -70,7 +70,7 @@ namespace OMSWeb.Queries.Queries
 
         public async Task<Category> GetById(int id)
         {
-            var category = await unitOfWork.Query<Category>().FirstAsync(c => c.CategoryID == id);
+            var category = await unitOfWork.Query<Category>().FirstOrDefaultAsync(c => c.CategoryID == id);
 
             if (category == null)
                 throw new KeyNotFoundException();
@@ -80,7 +80,7 @@ namespace OMSWeb.Queries.Queries
 
         public async Task<Category> Update(int id, DtoCategoryPut dtoCategoryPut)
         {
-            var category = await unitOfWork.Query<Category>().FirstAsync(c => c.CategoryID == id);
+            var category = await unitOfWork.Query<Category>().FirstOrDefaultAsync(c => c.CategoryID == id);
 
             if (category == null)
                 throw new KeyNotFoundException();
