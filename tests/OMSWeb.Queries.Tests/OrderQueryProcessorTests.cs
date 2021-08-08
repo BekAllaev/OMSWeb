@@ -141,7 +141,7 @@ namespace OMSWeb.Queries.Tests
                 ProductID = productId 
             }, options => options.ExcludingMissingMembers());
 
-            unitOfWork.Verify(x => x.CommitAsync());
+            unitOfWork.Verify(x => x.CommitAsync(), Times.Exactly(2));
         }
     }
 }
