@@ -52,14 +52,16 @@ namespace OMSWeb.Queries.Queries
                 try
                 {
                     unitOfWork.Add(order);
-
                     await unitOfWork.CommitAsync();
 
-                    foreach (var orderDetail in orderDto.Order_Details.ToList())
+                    var id = (await unitOfWork.Query<Order>().LastAsync()).OrderID;
+
+                    foreach (var orderDetail in orderDto.Order_Details)
                     {
+                        orderDetail.OrderID = id;
+                        orderDetail.ProductID = orderDto.ProductID;
                         unitOfWork.Add(orderDetail);
                     }
-
                     await unitOfWork.CommitAsync();
                 }
                 catch (Exception)
@@ -98,7 +100,11 @@ namespace OMSWeb.Queries.Queries
 
         public async Task<Order> GetById(int id)
         {
-            var order = await unitOfWork.Query<Order>().Include(order => order.Order_Details).FirstAsync(o => o.OrderID == id);
+            //Business logic: When get one order we need to know its details. Return value acts like invoice
+            var order = await unitOfWork.Query<Order>().Include(order => order.Order_Details).FirstOrDefaultAsync(o => o.OrderID == id);
+
+            if (order is null)
+                throw new KeyNotFoundException();
 
             return order;
         }

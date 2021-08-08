@@ -9,6 +9,7 @@ namespace OMSWeb.Dto.Model.OrderDto
 {
     public class DtoOrderPost
     {
+        public int ProductID { get; set; }
         public string CustomerID { get; set; }
         public int? EmployeeID { get; set; }
         public DateTime? OrderDate { get; set; }
